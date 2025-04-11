@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -19,13 +19,6 @@
       font-size: 2rem;
       color: #9f6eff;
       text-shadow: 0 0 5px purple;
-    }
-
-    .banner {
-      width: 100%;
-      max-height: 250px;
-      object-fit: cover;
-      border-bottom: 4px solid #a357ff;
     }
 
     .menu {
@@ -83,7 +76,7 @@
       background: #1a001a;
       border: 1px solid #a357ff;
       border-radius: 10px;
-      padding: 15px;
+      padding: 10px;
       text-align: center;
       color: white;
       font-weight: bold;
@@ -95,6 +88,14 @@
     .watch-btn:hover {
       transform: scale(1.05);
       background-color: #2e003e;
+    }
+
+    .watch-btn img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
 
     .footer {
@@ -125,10 +126,8 @@
     ANIME VAULT — <span style="font-size: 1rem;">Author: Arin</span>
   </header>
 
-  <img src="banner/banner_shadow_purple.png" alt="Banner" class="banner">
-
   <div class="watch-list" id="watchList">
-    <!-- Dynamic episode blocks -->
+    <!-- Episode Blocks Appear Here -->
   </div>
 
   <div class="footer">
@@ -137,23 +136,31 @@
 
   <script>
     const epBlocks = [
-      { range: "Ep 1–10", url: "https://gplinks.co/FairyTailHindiEp1to10" },
-      { range: "Ep 10–15", url: "https://gplinks.co/FairyTailHindiEp10to15" },
+      { range: "Ep 1–5", url: "https://gplinks.co/FairyTailHindiEp1to5" },
+      { range: "Ep 6–10", url: "https://gplinks.co/FairyTailHindiEp6to10" },
+      { range: "Ep 11–15", url: "https://gplinks.co/FairyTailHindiEp11to15" },
       { range: "Ep 16–20", url: "https://gplinks.co/FairyTailHindiEp16to20" },
       { range: "Ep 21–25", url: "https://gplinks.co/FairyTailHindiEp21to25" },
       { range: "Ep 26–30", url: "https://gplinks.co/FairyTailHindiEp26to30" },
-      { range: "Ep 31–35", url: "https://gplinks.co/FairyTailHindiEp31to35" },
-      { range: "Ep 35–40", url: "https://gplinks.co/FairyTailHindiEp35to40" },
-      { range: "Ep 40–44", url: "https://gplinks.co/FairyTailHindiEp40to44" },
-      { range: "Ep 44–48", url: "https://gplinks.co/FairyTailHindiEp44to48" },
     ];
 
     const watchList = document.getElementById("watchList");
-    epBlocks.forEach(ep => {
+
+    epBlocks.forEach((ep, i) => {
       const div = document.createElement("div");
       div.className = "watch-btn";
-      div.innerText = "Watch - " + ep.range;
+
+      const img = document.createElement("img");
+      img.src = `images/${(i+1).toString().padStart(2, '0')}.jpg`;
+      img.onerror = () => img.src = "images/placeholder.jpg";
+
+      const text = document.createElement("div");
+      text.innerText = "Watch - " + ep.range;
+
+      div.appendChild(img);
+      div.appendChild(text);
       div.onclick = () => window.open(ep.url, '_blank');
+
       watchList.appendChild(div);
     });
 
@@ -164,4 +171,3 @@
   </script>
 </body>
 </html>
-
