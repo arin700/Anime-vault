@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Anime Vault - Arin</title>
   <style>
     body {
       background: linear-gradient(to right, #0f0f0f, #1a001a);
-      color: #d8bfff;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
+      color: #e2d9ff;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
     }
@@ -25,6 +25,7 @@
       display: flex;
       justify-content: flex-end;
       padding: 10px 20px;
+      cursor: pointer;
     }
 
     .menu .dot {
@@ -98,6 +99,18 @@
       margin-bottom: 10px;
     }
 
+    .episode-links {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .episode-links a {
+      display: block;
+      color: #ffd6ff;
+      text-decoration: none;
+      margin: 5px 0;
+    }
+
     .footer {
       text-align: center;
       padding: 20px;
@@ -126,9 +139,7 @@
     ANIME VAULT — <span style="font-size: 1rem;">Author: Arin</span>
   </header>
 
-  <div class="watch-list" id="watchList">
-    <!-- Episode Blocks Appear Here -->
-  </div>
+  <div class="watch-list" id="watchList"></div>
 
   <div class="footer">
     I Love Cosmic Sun — © Anime Vault. All rights reserved.
@@ -136,16 +147,15 @@
 
   <script>
     const epBlocks = [
-      { range: "Ep 1–5", url: "https://gplinks.co/FairyTailHindiEp1to5" },
-      { range: "Ep 6–10", url: "https://gplinks.co/FairyTailHindiEp6to10" },
-      { range: "Ep 11–15", url: "https://gplinks.co/FairyTailHindiEp11to15" },
-      { range: "Ep 16–20", url: "https://gplinks.co/FairyTailHindiEp16to20" },
-      { range: "Ep 21–25", url: "https://gplinks.co/FairyTailHindiEp21to25" },
-      { range: "Ep 26–30", url: "https://gplinks.co/FairyTailHindiEp26to30" },
-      { range: "Ep 31–35", url: "https://gplinks.co/FairyTailHindiEp31to35" },
-      { range: "Ep 36–40", url: "https://gplinks.co/FairyTailHindiEp36to40" },
-      { range: "Ep 41–44", url: "https://gplinks.co/FairyTailHindiEp41to44" },
-      { range: "Ep 45–48", url: "https://gplinks.co/FairyTailHindiEp45to48" },
+      { range: "Ep 1–10", url: "https://gplinks.co/FairyTailHindi01to10" },
+      { range: "Ep 11–15", url: "https://gplinks.co/FairyTailHindi11to15" },
+      { range: "Ep 16–20", url: "https://gplinks.co/FairyTailHindi16to20" },
+      { range: "Ep 21–25", url: "https://gplinks.co/FairyTailHindi21to25" },
+      { range: "Ep 26–30", url: "https://gplinks.co/FairyTailHindi26to30" },
+      { range: "Ep 31–35", url: "https://gplinks.co/FairyTailHindi31to35" },
+      { range: "Ep 36–40", url: "https://gplinks.co/FairyTailHindi36to40" },
+      { range: "Ep 41–44", url: "https://gplinks.co/FairyTailHindi41to44" },
+      { range: "Ep 45–48", url: "https://gplinks.co/FairyTailHindi45to48" }
     ];
 
     const watchList = document.getElementById("watchList");
@@ -155,16 +165,23 @@
       div.className = "watch-btn";
 
       const img = document.createElement("img");
-      img.src = `images/${(i+1).toString().padStart(2, '0')}.jpg`;
-      img.onerror = () => img.src = "images/placeholder.jpg";
+      img.src = `images/${(i + 1).toString().padStart(2, '0')}.png`;
+      img.onerror = () => img.src = "images/placeholder.png";
 
       const text = document.createElement("div");
       text.innerText = "Watch - " + ep.range;
 
+      const links = document.createElement("div");
+      links.className = "episode-links";
+      links.innerHTML = `<a href="${ep.url}" target="_blank">Watch Episodes</a>`;
+
+      div.onclick = () => {
+        links.style.display = links.style.display === "block" ? "none" : "block";
+      };
+
       div.appendChild(img);
       div.appendChild(text);
-      div.onclick = () => window.open(ep.url, '_blank');
-
+      div.appendChild(links);
       watchList.appendChild(div);
     });
 
@@ -173,5 +190,6 @@
       menu.style.display = (menu.style.display === "flex") ? "none" : "flex";
     }
   </script>
+
 </body>
 </html>
