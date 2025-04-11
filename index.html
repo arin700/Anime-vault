@@ -2,111 +2,108 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Depths of the Shadow Flame — Anime Vault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Vault — Arin</title>
   <style>
-    * {
+    body {
+      background: linear-gradient(to right, #0f0f0f, #1a001a);
+      color: #d8bfff;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background: linear-gradient(to right, #0d0d0d, #1c001f);
-      color: #e0d8ff;
-      font-family: 'Segoe UI', sans-serif;
     }
 
     header {
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.7);
       padding: 20px;
       text-align: center;
       font-size: 2rem;
-      color: #a970ff;
-      text-shadow: 0 0 6px purple;
+      color: #9f6eff;
+      text-shadow: 0 0 5px purple;
     }
 
     .menu {
-      position: fixed;
-      top: 10px;
-      right: 20px;
       display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      z-index: 1000;
+      justify-content: flex-end;
+      padding: 10px 20px;
     }
 
     .menu .dot {
-      height: 6px;
-      width: 6px;
-      margin: 3px;
-      background-color: #c694ff;
+      height: 5px;
+      width: 5px;
+      margin: 4px;
+      background-color: #a357ff;
       border-radius: 50%;
+      display: inline-block;
     }
 
     .dropdown {
-      position: fixed;
-      top: 50px;
+      position: absolute;
       right: 20px;
-      background: #1e1e2f;
-      border: 1px solid #a357ff;
-      border-radius: 10px;
+      top: 60px;
+      background: #1b1b2f;
+      color: white;
+      border: 1px solid #9f6eff;
+      border-radius: 8px;
       display: none;
       flex-direction: column;
       padding: 10px;
-      z-index: 1001;
+      z-index: 1000;
     }
 
     .dropdown a {
       color: #d8bfff;
-      padding: 10px 15px;
+      padding: 8px 10px;
       text-decoration: none;
       border-bottom: 1px solid #333;
-      transition: background 0.3s;
+    }
+
+    .dropdown a:last-child {
+      border-bottom: none;
     }
 
     .dropdown a:hover {
       background: #29294d;
     }
 
-    .container {
-      padding: 80px 20px 20px 20px;
+    .watch-list {
+      padding: 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
     }
 
-    .card {
+    .watch-btn {
       background: #1a001a;
       border: 1px solid #a357ff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 0 12px #7a2bff80;
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-    }
-
-    .card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      background: black;
-    }
-
-    .card div {
+      border-radius: 10px;
       padding: 10px;
       text-align: center;
+      color: white;
       font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px #a357ff;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .watch-btn:hover {
+      transform: scale(1.05);
+      background-color: #2e003e;
+    }
+
+    .watch-btn img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
 
     .footer {
       text-align: center;
       padding: 20px;
-      color: #a970ff;
-      font-size: 0.9rem;
+      font-size: 1rem;
+      color: #9f6eff;
     }
   </style>
 </head>
@@ -118,7 +115,7 @@
     <span class="dot"></span>
   </div>
 
-  <div class="dropdown" id="dropdownMenu">
+  <div id="dropdownMenu" class="dropdown">
     <a href="#">Arise (Home)</a>
     <a href="#">Cosmic Pulse (Trending)</a>
     <a href="#">Shadow Realms (Library)</a>
@@ -126,54 +123,20 @@
     <a href="#">Eternal Watchlist</a>
   </div>
 
-  <header>ANIME VAULT — Depths of the Shadow Flame</header>
+  <header>
+    ANIME VAULT — <span style="font-size: 1rem;">Author: Arin</span>
+  </header>
 
-  <div class="container" id="watchList">
-    <!-- Cards Auto Insert -->
+  <div class="watch-list" id="watchList">
+    <!-- Anime Cards Appear Here -->
   </div>
 
   <div class="footer">
-    Designed by Arin — Anime Vault © All Rights Reserved.
+    I Love Cosmic Sun — © Anime Vault. All rights reserved.
   </div>
 
   <script>
-    const episodes = [
+    const epBlocks = [
       { range: "Ep 1–5", url: "https://gplinks.co/FairyTailHindiEp1to5" },
       { range: "Ep 6–10", url: "https://gplinks.co/FairyTailHindiEp6to10" },
-      { range: "Ep 11–15", url: "https://gplinks.co/FairyTailHindiEp11to15" },
-      { range: "Ep 16–20", url: "https://gplinks.co/FairyTailHindiEp16to20" },
-      { range: "Ep 21–25", url: "https://gplinks.co/FairyTailHindiEp21to25" },
-      { range: "Ep 26–30", url: "https://gplinks.co/FairyTailHindiEp26to30" },
-      { range: "Ep 31–35", url: "https://gplinks.co/FairyTailHindiEp31to35" },
-      { range: "Ep 36–40", url: "https://gplinks.co/FairyTailHindiEp36to40" },
-      { range: "Ep 41–45", url: "https://gplinks.co/FairyTailHindiEp41to45" },
-      { range: "Ep 46–48", url: "https://gplinks.co/FairyTailHindiEp46to48" }
-    ];
-
-    const watchList = document.getElementById("watchList");
-
-    episodes.forEach((ep, i) => {
-      const card = document.createElement("div");
-      card.className = "card";
-
-      const img = document.createElement("img");
-      img.src = `images/${(i+1).toString().padStart(2, '0')}.jpg`;
-      img.onerror = () => img.src = "images/placeholder.jpg";
-
-      const label = document.createElement("div");
-      label.textContent = "Watch - " + ep.range;
-
-      card.appendChild(img);
-      card.appendChild(label);
-      card.onclick = () => window.open(ep.url, "_blank");
-
-      watchList.appendChild(card);
-    });
-
-    function toggleMenu() {
-      const dropdown = document.getElementById("dropdownMenu");
-      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-    }
-  </script>
-</body>
-</html>
+      { range: "Ep
