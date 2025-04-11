@@ -2,121 +2,111 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Born from the Depths of Darkness — Anime Vault by Arin</title>
+  <title>Depths of the Shadow Flame — Anime Vault</title>
   <style>
-    body {
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to right, #0d0d0d, #1c001f);
+      color: #e0d8ff;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #0e0e0e, #1a001a);
-      color: #e0ccff;
     }
 
     header {
       background: rgba(0, 0, 0, 0.8);
-      padding: 25px 10px;
+      padding: 20px;
       text-align: center;
-      font-size: 2.2rem;
-      color: #c9a4ff;
-      text-shadow: 0 0 7px #7c3aed;
+      font-size: 2rem;
+      color: #a970ff;
+      text-shadow: 0 0 6px purple;
     }
 
     .menu {
-      position: absolute;
+      position: fixed;
+      top: 10px;
       right: 20px;
-      top: 20px;
+      display: flex;
+      flex-direction: column;
       cursor: pointer;
+      z-index: 1000;
     }
 
     .menu .dot {
       height: 6px;
       width: 6px;
-      margin: 5px;
-      background-color: #a855f7;
+      margin: 3px;
+      background-color: #c694ff;
       border-radius: 50%;
-      display: block;
     }
 
     .dropdown {
-      position: absolute;
+      position: fixed;
+      top: 50px;
       right: 20px;
-      top: 55px;
-      background: #1f1f2e;
-      color: white;
-      border: 1px solid #9f6eff;
+      background: #1e1e2f;
+      border: 1px solid #a357ff;
       border-radius: 10px;
       display: none;
       flex-direction: column;
       padding: 10px;
-      z-index: 999;
+      z-index: 1001;
     }
 
     .dropdown a {
       color: #d8bfff;
-      padding: 8px 12px;
+      padding: 10px 15px;
       text-decoration: none;
       border-bottom: 1px solid #333;
+      transition: background 0.3s;
     }
 
     .dropdown a:hover {
-      background: #32244e;
+      background: #29294d;
     }
 
-    .watch-list {
-      padding: 30px 20px;
+    .container {
+      padding: 80px 20px 20px 20px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
     }
 
-    .watch-card {
-      background: #19001d;
+    .card {
+      background: #1a001a;
+      border: 1px solid #a357ff;
       border-radius: 12px;
-      box-shadow: 0 0 15px #5e17eb33;
       overflow: hidden;
-      transition: 0.3s;
+      box-shadow: 0 0 12px #7a2bff80;
+      cursor: pointer;
+      transition: transform 0.3s;
     }
 
-    .watch-card:hover {
+    .card:hover {
       transform: scale(1.03);
     }
 
-    .watch-card img {
+    .card img {
       width: 100%;
-      height: 130px;
+      height: 150px;
       object-fit: cover;
       background: black;
     }
 
-    .watch-title {
-      padding: 12px;
+    .card div {
+      padding: 10px;
       text-align: center;
       font-weight: bold;
-      background: #2b0030;
-      color: #f2e7ff;
-      cursor: pointer;
-    }
-
-    .ep-links {
-      display: none;
-      padding: 10px;
-      background: #10001c;
-      border-top: 1px solid #333;
-    }
-
-    .ep-links a {
-      display: block;
-      color: #9f6eff;
-      text-decoration: none;
-      margin: 5px 0;
-      font-size: 0.9rem;
     }
 
     .footer {
       text-align: center;
       padding: 20px;
-      color: #aa88ff;
-      font-size: 1rem;
+      color: #a970ff;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -128,7 +118,7 @@
     <span class="dot"></span>
   </div>
 
-  <div id="dropdownMenu" class="dropdown">
+  <div class="dropdown" id="dropdownMenu">
     <a href="#">Arise (Home)</a>
     <a href="#">Cosmic Pulse (Trending)</a>
     <a href="#">Shadow Realms (Library)</a>
@@ -136,65 +126,53 @@
     <a href="#">Eternal Watchlist</a>
   </div>
 
-  <header>
-    Born from the Depths of Darkness — Anime Vault <span style="font-size: 1rem;">by Arin</span>
-  </header>
+  <header>ANIME VAULT — Depths of the Shadow Flame</header>
 
-  <div class="watch-list" id="watchList"></div>
+  <div class="container" id="watchList">
+    <!-- Cards Auto Insert -->
+  </div>
 
   <div class="footer">
-    Project Anime Vault — All rights reserved © Arin
+    Designed by Arin — Anime Vault © All Rights Reserved.
   </div>
 
   <script>
-    const epBlocks = [
-      { range: "Ep 1–10", url: "https://gplinks.co/FairyTailHindi01to10" },
-      { range: "Ep 11–15", url: "https://gplinks.co/FairyTailHindi11to15" },
-      { range: "Ep 16–20", url: "https://gplinks.co/FairyTailHindi16to20" },
-      { range: "Ep 21–25", url: "https://gplinks.co/FairyTailHindi21to25" },
-      { range: "Ep 26–30", url: "https://gplinks.co/FairyTailHindi26to30" },
-      { range: "Ep 31–35", url: "https://gplinks.co/FairyTailHindi31to35" },
-      { range: "Ep 36–40", url: "https://gplinks.co/FairyTailHindi36to40" },
-      { range: "Ep 41–44", url: "https://gplinks.co/FairyTailHindi41to44" },
-      { range: "Ep 45–48", url: "https://gplinks.co/FairyTailHindi45to48" },
+    const episodes = [
+      { range: "Ep 1–5", url: "https://gplinks.co/FairyTailHindiEp1to5" },
+      { range: "Ep 6–10", url: "https://gplinks.co/FairyTailHindiEp6to10" },
+      { range: "Ep 11–15", url: "https://gplinks.co/FairyTailHindiEp11to15" },
+      { range: "Ep 16–20", url: "https://gplinks.co/FairyTailHindiEp16to20" },
+      { range: "Ep 21–25", url: "https://gplinks.co/FairyTailHindiEp21to25" },
+      { range: "Ep 26–30", url: "https://gplinks.co/FairyTailHindiEp26to30" },
+      { range: "Ep 31–35", url: "https://gplinks.co/FairyTailHindiEp31to35" },
+      { range: "Ep 36–40", url: "https://gplinks.co/FairyTailHindiEp36to40" },
+      { range: "Ep 41–45", url: "https://gplinks.co/FairyTailHindiEp41to45" },
+      { range: "Ep 46–48", url: "https://gplinks.co/FairyTailHindiEp46to48" }
     ];
 
     const watchList = document.getElementById("watchList");
 
-    epBlocks.forEach((ep, i) => {
+    episodes.forEach((ep, i) => {
       const card = document.createElement("div");
-      card.className = "watch-card";
+      card.className = "card";
 
       const img = document.createElement("img");
       img.src = `images/${(i+1).toString().padStart(2, '0')}.jpg`;
-      img.onerror = () => { img.src = "images/placeholder.jpg"; };
+      img.onerror = () => img.src = "images/placeholder.jpg";
 
-      const title = document.createElement("div");
-      title.className = "watch-title";
-      title.innerText = "Watch - " + ep.range;
-
-      const linkBox = document.createElement("div");
-      linkBox.className = "ep-links";
-
-      const a = document.createElement("a");
-      a.href = ep.url;
-      a.target = "_blank";
-      a.innerText = "Watch " + ep.range;
-      linkBox.appendChild(a);
-
-      title.onclick = () => {
-        linkBox.style.display = linkBox.style.display === "block" ? "none" : "block";
-      };
+      const label = document.createElement("div");
+      label.textContent = "Watch - " + ep.range;
 
       card.appendChild(img);
-      card.appendChild(title);
-      card.appendChild(linkBox);
+      card.appendChild(label);
+      card.onclick = () => window.open(ep.url, "_blank");
+
       watchList.appendChild(card);
     });
 
     function toggleMenu() {
-      const menu = document.getElementById("dropdownMenu");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+      const dropdown = document.getElementById("dropdownMenu");
+      dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
     }
   </script>
 </body>
