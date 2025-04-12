@@ -3,148 +3,233 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anime Portal</title>
+  <title>Anime Admin Portal</title>
   <style>
     body {
+      background-color: #0a0a0a;
+      color: #fff;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0f0f0f;
-      color: #fff;
     }
-    header, nav {
-      background-color: #1a1a1a;
-      padding: 10px 20px;
+    header {
+      padding: 15px;
+      text-align: center;
+      background: #111;
+      box-shadow: 0 0 15px #0ff;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2em;
+      color: #0ff;
+      text-shadow: 0 0 5px #0ff;
+    }
+    nav {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: space-around;
+      padding: 10px;
+      background-color: #111;
+      box-shadow: 0 0 10px #0ff;
     }
-    nav a {
-      color: white;
-      margin: 0 10px;
-      text-decoration: none;
+    nav button {
+      padding: 10px 20px;
+      border: none;
+      background: #222;
+      color: #0ff;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 5px;
     }
     .container {
       padding: 20px;
     }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #222;
+      border: none;
+      color: #fff;
+      border-bottom: 2px solid #0ff;
+    }
     .card {
-      background-color: #1c1c1c;
-      border-radius: 10px;
+      background: #111;
       padding: 15px;
-      margin: 15px 0;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      margin: 10px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #0ff;
     }
     .card img {
       width: 100%;
-      border-radius: 10px;
-    }
-    .upload-form, .login-form {
-      margin: 20px 0;
-      background-color: #262626;
-      padding: 20px;
-      border-radius: 10px;
-    }
-    input, button, textarea {
-      margin: 10px 0;
-      width: 100%;
-      padding: 10px;
-      border: none;
+      max-height: 200px;
+      object-fit: cover;
       border-radius: 5px;
     }
-    .admin-options button {
-      background: #e74c3c;
+    .card h3 {
+      color: #0ff;
+      margin: 10px 0 5px;
+    }
+    .card .episode-group button {
+      margin: 5px 5px 0 0;
+      background: #0ff;
+      border: none;
+      color: #000;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .admin-options {
       margin-top: 10px;
     }
-    .hidden {
-      display: none;
+    .admin-options button {
+      background: red;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .search-box {
+      margin-bottom: 20px;
+    }
+    .search-box input {
+      padding: 10px;
+      width: 100%;
+      background: #222;
+      border: 2px solid #0ff;
+      color: #0ff;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Anime World</h1>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#features">Features</a>
-      <a href="#upload">Upload</a>
-      <a href="#search">Search</a>
-    </nav>
+    <h1>Anime Admin Portal</h1>
   </header>
 
+  <nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('upload')">Upload</button>
+    <button onclick="showSection('admin')">Admin</button>
+  </nav>
+
   <div class="container">
-    <div id="loginSection" class="login-form">
-      <h3>Admin Login</h3>
-      <input type="password" id="adminPass" placeholder="Enter Admin Password">
-      <button onclick="login()">Login</button>
+    <div id="home">
+      <div class="search-box">
+        <input type="text" id="searchInput" oninput="searchAnime()" placeholder="Search anime...">
+      </div>
+      <div id="animeList"></div>
     </div>
 
-    <div id="uploadSection" class="upload-form hidden">
-      <h3>Upload New Anime Card</h3>
-      <input type="text" id="animeTitle" placeholder="Anime Title">
-      <input type="text" id="imageURL" placeholder="Image URL (PNG, Transparent, etc)">
-      <textarea id="episodeLinks" placeholder="Example: Episode 1-10 - https://example.com/ep1to10"></textarea>
-      <button onclick="addCard()">Add Card</button>
+    <div id="upload" style="display:none;">
+      <div class="form-group">
+        <input type="text" id="animeName" placeholder="Anime Name">
+      </div>
+      <div class="form-group">
+        <input type="text" id="imageUrl" placeholder="Image URL">
+      </div>
+      <div class="form-group">
+        <input type="text" id="episodeLinks" placeholder="Episode Links (Ex: Ep 1-10=https://... , Ep 11-20=https://...)">
+      </div>
+      <button onclick="addAnime()">Add Anime</button>
     </div>
 
-    <div id="cards"></div>
+    <div id="admin" style="display:none;">
+      <div class="form-group">
+        <input type="password" id="adminPass" placeholder="Enter Admin Password">
+      </div>
+      <button onclick="verifyAdmin()">Login as Admin</button>
+    </div>
   </div>
 
   <script>
-    const adminPassword = "arin";
+    let animeData = JSON.parse(localStorage.getItem("animeData")) || [];
     let isAdmin = false;
 
-    function login() {
-      const pass = document.getElementById("adminPass").value;
-      if (pass === adminPassword) {
-        isAdmin = true;
-        document.getElementById("uploadSection").classList.remove("hidden");
-        document.getElementById("loginSection").classList.add("hidden");
-        renderCards();
-      } else {
-        alert("Incorrect password!");
+    function saveData() {
+      localStorage.setItem("animeData", JSON.stringify(animeData));
+    }
+
+    function showSection(section) {
+      document.getElementById("home").style.display = "none";
+      document.getElementById("upload").style.display = "none";
+      document.getElementById("admin").style.display = "none";
+      document.getElementById(section).style.display = "block";
+    }
+
+    function addAnime() {
+      const name = document.getElementById("animeName").value.trim();
+      const imageUrl = document.getElementById("imageUrl").value.trim();
+      const episodeLinksRaw = document.getElementById("episodeLinks").value.trim();
+
+      if (!name || !imageUrl || !episodeLinksRaw) return alert("Fill all fields");
+
+      const episodeGroups = episodeLinksRaw.split(",").map((ep) => {
+        const [label, link] = ep.split("=");
+        return { label: label.trim(), link: link.trim() };
+      });
+
+      // Remove duplicates
+      if (animeData.some(a => a.name.toLowerCase() === name.toLowerCase())) {
+        alert("Anime already exists! Rename or delete old one.");
+        return;
       }
+
+      animeData.push({ name, imageUrl, episodeGroups });
+      saveData();
+      renderList();
+      alert("Anime added successfully!");
     }
 
-    function addCard() {
-      const title = document.getElementById("animeTitle").value;
-      const img = document.getElementById("imageURL").value;
-      const eps = document.getElementById("episodeLinks").value;
-      const card = {
-        title,
-        img,
-        episodes: eps
-      };
-      const cards = JSON.parse(localStorage.getItem("animeCards") || "[]");
-      cards.push(card);
-      localStorage.setItem("animeCards", JSON.stringify(cards));
-      renderCards();
-    }
-
-    function deleteCard(index) {
-      const cards = JSON.parse(localStorage.getItem("animeCards") || "[]");
-      cards.splice(index, 1);
-      localStorage.setItem("animeCards", JSON.stringify(cards));
-      renderCards();
-    }
-
-    function renderCards() {
-      const cards = JSON.parse(localStorage.getItem("animeCards") || "[]");
-      const container = document.getElementById("cards");
-      container.innerHTML = "";
-      cards.forEach((card, i) => {
-        const div = document.createElement("div");
-        div.className = "card";
-        div.innerHTML = `
-          <h3>${card.title}</h3>
-          <img src="${card.img}" alt="${card.title}" />
-          <p>${card.episodes.replace(/\n/g, '<br>')}</p>
-          ${isAdmin ? `<div class="admin-options"><button onclick="deleteCard(${i})">Delete</button></div>` : ""}
+    function renderList() {
+      const list = document.getElementById("animeList");
+      list.innerHTML = "";
+      animeData.forEach((anime, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const episodeBtns = anime.episodeGroups.map(group => `<button onclick="window.open('${group.link}')">${group.label}</button>`).join(" ");
+        card.innerHTML = `
+          <img src="${anime.imageUrl}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+          <h3>${anime.name}</h3>
+          <div class="episode-group">${episodeBtns}</div>
+          ${isAdmin ? `<div class="admin-options"><button onclick="deleteAnime(${index})">Delete</button></div>` : ""}
         `;
-        container.appendChild(div);
+        list.appendChild(card);
       });
     }
 
-    window.onload = renderCards;
+    function deleteAnime(index) {
+      if (!isAdmin) return alert("Admin only");
+      if (confirm("Delete this entry?")) {
+        animeData.splice(index, 1);
+        saveData();
+        renderList();
+      }
+    }
+
+    function verifyAdmin() {
+      const pass = document.getElementById("adminPass").value;
+      if (pass === "Arin") {
+        isAdmin = true;
+        alert("Admin access granted");
+        showSection("home");
+        renderList();
+      } else {
+        alert("Wrong password");
+      }
+    }
+
+    function searchAnime() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const cards = document.querySelectorAll(".card");
+      animeData.forEach((anime, index) => {
+        cards[index].style.display = anime.name.toLowerCase().includes(query) ? "block" : "none";
+      });
+    }
+
+    window.onload = renderList;
   </script>
 </body>
 </html>
