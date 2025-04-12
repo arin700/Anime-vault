@@ -36,10 +36,6 @@
       width: 60%;
       margin-bottom: 10px;
     }
-    nav .menu {
-      margin: 10px;
-      color: white;
-    }
     .anime-grid {
       display: flex;
       flex-wrap: wrap;
@@ -110,6 +106,7 @@
       padding: 0.6em 1em;
       border: none;
       border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -132,20 +129,27 @@
   <button onclick="addAnime()">Add Anime</button>
 </div>
 
-<div class="anime-grid" id="animeGrid">
-  <!-- Auto-filled anime cards -->
-</div>
+<div class="anime-grid" id="animeGrid"></div>
 
 <script>
   let animeList = [];
 
   function addAnime() {
-    const title = document.getElementById("animeTitle").value;
-    const image = document.getElementById("animeImage").value || "https://via.placeholder.com/200x120?text=Anime";
-    const episodes = document.getElementById("episodeList").value.split(',').map(e => e.trim());
+    const title = document.getElementById("animeTitle").value.trim();
+    const image = document.getElementById("animeImage").value.trim() || "https://via.placeholder.com/200x120?text=Anime";
+    const episodeInput = document.getElementById("episodeList").value.trim();
+
+    if (!title || !episodeInput) {
+      alert("Please fill in the title and episodes.");
+      return;
+    }
+
+    const episodes = episodeInput.split(',').map(e => e.trim());
 
     animeList.push({ title, image, episodes });
     renderAnimes();
+
+    // Clear input fields
     document.getElementById("animeTitle").value = '';
     document.getElementById("animeImage").value = '';
     document.getElementById("episodeList").value = '';
@@ -161,7 +165,7 @@
           <img src="${anime.image}" onerror="this.src='https://via.placeholder.com/200x120?text=No+Image';" />
           <div class="title">${anime.title}</div>
           <div class="buttons">
-            <button onclick="toggleEpisodes(${index})">Time to Comeback</button>
+            <button onclick="toggleEpisodes(${index})">Show Episodes</button>
             <button>Shadow Mark</button>
           </div>
           <div class="episodes" id="ep-${index}">
@@ -177,21 +181,28 @@
     el.style.display = el.style.display === 'block' ? 'none' : 'block';
   }
 
-  document.getElementById("search").addEventListener("input", function() {
+  document.getElementById("search").addEventListener("input", function () {
     const value = this.value.toLowerCase();
-    document.querySelectorAll(".card").forEach(card => {
-      const title = card.querySelector(".title").textContent.toLowerCase();
-      card.style.display = title.includes(value) ? "block" : "none";
+    const filtered = animeList.filter(a => a.title.toLowerCase().includes(value));
+    const grid = document.getElementById("animeGrid");
+    grid.innerHTML = "";
+    filtered.forEach((anime, index) => {
+      let epHTML = anime.episodes.map(ep => `<button>${ep}</button>`).join('');
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${anime.image}" onerror="this.src='https://via.placeholder.com/200x120?text=No+Image';" />
+          <div class="title">${anime.title}</div>
+          <div class="buttons">
+            <button onclick="toggleEpisodes(${index})">Show Episodes</button>
+            <button>Shadow Mark</button>
+          </div>
+          <div class="episodes" id="ep-${index}">
+            ${epHTML}
+          </div>
+        </div>
+      `;
     });
   });
-
-  // Optional preload anime
-  animeList = [
-    { title: "Naruto", image: "", episodes: ["Ep 1-10", "Ep 11-20"] },
-    { title: "Attack on Titan", image: "", episodes: ["Ep 1-5", "Ep 6-10"] },
-    { title: "Demon Slayer", image: "", episodes: ["Ep 1-12"] }
-  ];
-  renderAnimes();
 </script>
 
 </body>
