@@ -1,136 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anime Vault</title>
-    <style>
-        /* Your CSS Styles for layout */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #181818;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-        }
-        .anime-card {
-            width: 18%;
-            margin: 10px;
-            display: inline-block;
-            background-color: #2e2e2e;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            text-align: center;
-        }
-        .anime-card img {
-            width: 100%;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-        .anime-card h3 {
-            font-size: 1.2em;
-            padding: 10px;
-            background-color: #3a3a3a;
-            margin: 0;
-        }
-        .anime-card a {
-            display: block;
-            padding: 15px;
-            background-color: #d34d71;
-            color: white;
-            text-decoration: none;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-        .anime-card a:hover {
-            background-color: #b33b5e;
-        }
-        /* Pagination */
-        .pagination {
-            text-align: center;
-            padding: 20px 0;
-        }
-        .pagination a {
-            color: #fff;
-            padding: 10px;
-            text-decoration: none;
-            background-color: #3a3a3a;
-            margin: 5px;
-            border-radius: 5px;
-        }
-        .pagination a:hover {
-            background-color: #d34d71;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anime Vault — Curated by Arin</title>
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: white;
+      font-family: 'Comic Neue', sans-serif;
+    }
+    header {
+      background: black;
+      padding: 1em;
+      text-align: center;
+      border-bottom: 3px solid orange;
+    }
+    header h1 {
+      color: orange;
+      font-size: 2em;
+    }
+    header p {
+      margin-top: 5px;
+      font-style: italic;
+    }
+    nav {
+      text-align: center;
+      margin-top: 1em;
+    }
+    nav input {
+      padding: 0.5em;
+      border-radius: 5px;
+      border: none;
+      width: 60%;
+      margin-bottom: 10px;
+    }
+    nav .menu {
+      margin: 10px;
+      color: white;
+    }
+    .anime-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1em;
+      gap: 1em;
+    }
+    .card {
+      background: #1a1a1a;
+      padding: 1em;
+      border-radius: 10px;
+      width: 200px;
+      box-shadow: 0 0 20px purple;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.05);
+    }
+    .card img {
+      width: 100%;
+      height: 120px;
+      border-radius: 5px;
+      object-fit: cover;
+    }
+    .title {
+      font-size: 1.1em;
+      margin: 0.5em 0;
+    }
+    .buttons button {
+      margin-top: 5px;
+      padding: 0.5em;
+      background: orange;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .episodes {
+      display: none;
+      margin-top: 1em;
+      text-align: left;
+    }
+    .episodes button {
+      margin: 2px;
+      background: #ff9800;
+    }
+    .upload-panel {
+      background: #1a1a1a;
+      padding: 1em;
+      margin: 1em;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .upload-panel input, .upload-panel textarea {
+      display: block;
+      margin: 0.5em auto;
+      padding: 0.5em;
+      width: 80%;
+      border-radius: 5px;
+      border: none;
+    }
+    .upload-panel button {
+      margin-top: 10px;
+      background: purple;
+      color: white;
+      padding: 0.6em 1em;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <!-- Dynamic Anime Cards Section -->
-    <div id="anime-cards"></div>
+<header>
+  <h1>Anime Vault</h1>
+  <p>Curated by Arin — Best Legend of Hindi Anime</p>
+</header>
 
-    <!-- Pagination Section -->
-    <div class="pagination" id="pagination"></div>
+<nav>
+  <input id="search" placeholder="Search anime..." />
+</nav>
+
+<div class="upload-panel">
+  <h3>Add New Anime</h3>
+  <input id="animeTitle" placeholder="Title"/>
+  <input id="animeImage" placeholder="Image URL (or leave blank)"/>
+  <textarea id="episodeList" placeholder="Enter episodes (Ex: Ep 1-10, Ep 11-20)"></textarea>
+  <button onclick="addAnime()">Add Anime</button>
+</div>
+
+<div class="anime-grid" id="animeGrid">
+  <!-- Auto-filled anime cards -->
 </div>
 
 <script>
-    // Sample Anime Data (Placeholder for API/auto-fetch logic)
-    const animeData = [
-        {
-            title: 'Fairy Tail',
-            description: 'Fairy Tail follows the adventures of Natsu Dragneel, a young wizard who is a member of the infamous wizard guild, Fairy Tail.',
-            image: 'https://example.com/fairy-tail.jpg',
-            episodes: 48
-        },
-        {
-            title: 'Naruto',
-            description: 'Naruto follows the journey of Naruto Uzumaki, a young ninja who dreams of becoming the strongest ninja and gaining respect.',
-            image: 'https://example.com/naruto.jpg',
-            episodes: 220
-        }
-        // Add more anime data here
-    ];
+  let animeList = [];
 
-    // Function to Generate Anime Cards
-    function generateAnimeCards() {
-        const cardsContainer = document.getElementById('anime-cards');
-        cardsContainer.innerHTML = ''; // Clear any previous content
+  function addAnime() {
+    const title = document.getElementById("animeTitle").value;
+    const image = document.getElementById("animeImage").value || "https://via.placeholder.com/200x120?text=Anime";
+    const episodes = document.getElementById("episodeList").value.split(',').map(e => e.trim());
 
-        animeData.forEach((anime, index) => {
-            const card = document.createElement('div');
-            card.classList.add('anime-card');
+    animeList.push({ title, image, episodes });
+    renderAnimes();
+    document.getElementById("animeTitle").value = '';
+    document.getElementById("animeImage").value = '';
+    document.getElementById("episodeList").value = '';
+  }
 
-            // Card Content
-            card.innerHTML = `
-                <img src="${anime.image}" alt="${anime.title}" />
-                <h3>${anime.title}</h3>
-                <p>${anime.description}</p>
-                <a href="/watch/${anime.title.replace(/ /g, '-').toLowerCase()}">Watch Now (${anime.episodes} Episodes)</a>
-            `;
-            cardsContainer.appendChild(card);
-        });
-    }
+  function renderAnimes() {
+    const grid = document.getElementById("animeGrid");
+    grid.innerHTML = "";
+    animeList.forEach((anime, index) => {
+      let epHTML = anime.episodes.map(ep => `<button>${ep}</button>`).join('');
+      grid.innerHTML += `
+        <div class="card">
+          <img src="${anime.image}" onerror="this.src='https://via.placeholder.com/200x120?text=No+Image';" />
+          <div class="title">${anime.title}</div>
+          <div class="buttons">
+            <button onclick="toggleEpisodes(${index})">Time to Comeback</button>
+            <button>Shadow Mark</button>
+          </div>
+          <div class="episodes" id="ep-${index}">
+            ${epHTML}
+          </div>
+        </div>
+      `;
+    });
+  }
 
-    // Pagination Function (For future implementation with pages)
-    function createPagination() {
-        const paginationContainer = document.getElementById('pagination');
-        const pages = Math.ceil(animeData.length / 5); // 5 items per page (can adjust as needed)
+  function toggleEpisodes(index) {
+    const el = document.getElementById(`ep-${index}`);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+  }
 
-        for (let i = 1; i <= pages; i++) {
-            const pageLink = document.createElement('a');
-            pageLink.href = `#page${i}`;
-            pageLink.textContent = i;
-            paginationContainer.appendChild(pageLink);
-        }
-    }
+  document.getElementById("search").addEventListener("input", function() {
+    const value = this.value.toLowerCase();
+    document.querySelectorAll(".card").forEach(card => {
+      const title = card.querySelector(".title").textContent.toLowerCase();
+      card.style.display = title.includes(value) ? "block" : "none";
+    });
+  });
 
-    // Initialize everything
-    generateAnimeCards();
-    createPagination();
+  // Optional preload anime
+  animeList = [
+    { title: "Naruto", image: "", episodes: ["Ep 1-10", "Ep 11-20"] },
+    { title: "Attack on Titan", image: "", episodes: ["Ep 1-5", "Ep 6-10"] },
+    { title: "Demon Slayer", image: "", episodes: ["Ep 1-12"] }
+  ];
+  renderAnimes();
 </script>
 
 </body>
