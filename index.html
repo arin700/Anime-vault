@@ -46,7 +46,7 @@
     .form-group {
       margin-bottom: 15px;
     }
-    input[type="text"] {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
       background-color: #222;
@@ -91,6 +91,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      margin-right: 5px;
     }
     .search-box {
       margin-bottom: 20px;
@@ -111,7 +112,7 @@
 
   <nav>
     <button onclick="showSection('home')">Home</button>
-    <button onclick="showSection('upload')">Upload</button>
+    <button onclick="isAdmin ? showSection('upload') : alert('Login as Admin')">Upload</button>
     <button onclick="showSection('admin')">Admin</button>
   </nav>
 
@@ -128,12 +129,12 @@
         <input type="text" id="animeName" placeholder="Anime Name">
       </div>
       <div class="form-group">
-        <input type="text" id="imageUrl" placeholder="Image URL">
+        <input type="text" id="imageUrl" placeholder="Image URL or Folder Path">
       </div>
       <div class="form-group">
-        <input type="text" id="episodeLinks" placeholder="Episode Links (Ex: Ep 1-10=https://... , Ep 11-20=https://...)">
+        <input type="text" id="episodeLinks" placeholder="Ep 1-10=https://..., Ep 11-20=https://...">
       </div>
-      <button onclick="addAnime()">Add Anime</button>
+      <button onclick="addAnime()">Add / Update Anime</button>
     </div>
 
     <div id="admin" style="display:none;">
@@ -163,7 +164,6 @@
       const name = document.getElementById("animeName").value.trim();
       const imageUrl = document.getElementById("imageUrl").value.trim();
       const episodeLinksRaw = document.getElementById("episodeLinks").value.trim();
-
       if (!name || !imageUrl || !episodeLinksRaw) return alert("Fill all fields");
 
       const episodeGroups = episodeLinksRaw.split(",").map((ep) => {
@@ -171,16 +171,16 @@
         return { label: label.trim(), link: link.trim() };
       });
 
-      // Remove duplicates
-      if (animeData.some(a => a.name.toLowerCase() === name.toLowerCase())) {
-        alert("Anime already exists! Rename or delete old one.");
-        return;
+      const existing = animeData.find(a => a.name.toLowerCase() === name.toLowerCase());
+      if (existing) {
+        existing.episodeGroups = existing.episodeGroups.concat(episodeGroups);
+        existing.imageUrl = imageUrl;
+      } else {
+        animeData.push({ name, imageUrl, episodeGroups });
       }
-
-      animeData.push({ name, imageUrl, episodeGroups });
       saveData();
       renderList();
-      alert("Anime added successfully!");
+      alert("Anime saved successfully!");
     }
 
     function renderList() {
@@ -194,7 +194,10 @@
           <img src="${anime.imageUrl}" onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
           <h3>${anime.name}</h3>
           <div class="episode-group">${episodeBtns}</div>
-          ${isAdmin ? `<div class="admin-options"><button onclick="deleteAnime(${index})">Delete</button></div>` : ""}
+          ${isAdmin ? `
+            <div class="admin-options">
+              <button onclick="deleteAnime(${index})">Delete</button>
+            </div>` : ""}
         `;
         list.appendChild(card);
       });
