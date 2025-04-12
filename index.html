@@ -1,31 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Anime Upload System</title>
+  <meta charset="UTF-8" />
+  <title>Anime Vault</title>
   <style>
+    /* Global resets */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       font-family: Arial, sans-serif;
       background: #1e1e2f;
       color: #fff;
-      margin: 0;
       padding: 20px;
     }
     h1 {
       text-align: center;
+      margin-bottom: 20px;
       color: #ffcc00;
     }
-    .upload-panel, .anime-grid {
-      max-width: 800px;
+    .container {
+      max-width: 900px;
       margin: auto;
     }
+    /* Admin Login Button */
+    #loginBtn {
+      display: block;
+      width: 150px;
+      margin: 10px auto 20px auto;
+      padding: 10px;
+      background: #ffcc00;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Upload Panel (hidden by default) */
     .upload-panel {
       background: #2c2c3e;
       padding: 20px;
       border-radius: 10px;
       margin-bottom: 30px;
+      display: none;
     }
-    input, textarea, button {
+    .upload-panel input,
+    .upload-panel textarea,
+    .upload-panel button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -33,16 +56,27 @@
       border-radius: 5px;
       font-size: 16px;
     }
-    button {
-      background: #ffcc00;
-      color: #000;
+    .upload-panel button {
+      background: purple;
+      color: #fff;
       font-weight: bold;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s;
     }
-    button:hover {
-      background: #e6b800;
+    .upload-panel button:hover {
+      background: darkmagenta;
     }
+    /* Search Box with Icon */
+    #search {
+      width: 100%;
+      padding: 10px 40px 10px 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      background: #222 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 24 24'%3E%3Cpath d='M10,18 C13.3137085,18 16,15.3137085 16,12 C16,8.6862915 13.3137085,6 10,6 C6.6862915,6 4,8.6862915 4,12 C4,15.3137085 6.6862915,18 10,18 Z M10,4 C14.418278,4 18,7.581722 18,12 C18,12.707107 17.8431457,13.386 17.548,14 L22,18.452 C22.390524,18.842524 22.390524,19.475676 22,19.8662 C21.609476,20.256724 20.976324,20.256724 20.5858,19.8662 L16.1338,15.4142 C15.529,15.7093 14.850107,15.8662 14.143,15.8662 C9.724722,15.8662 6.143,12.284477 6.143,7.8662 C6.143,3.447923 9.724722,-0.1338 14.143,-0.1338 C18.561277,-0.1338 22.143,3.447923 22.143,7.8662 C22.143,8.573307 21.9861447,9.2522 21.691,9.5473 L26.143,14 C26.533524,14.390524 26.533524,15.023676 26.143,15.4142 C25.752476,15.804724 25.119324,15.804724 24.7288,15.4142 L20.2768,11 C20.5819,10.304 20.739,9.625107 20.739,8.918 L20.739,8.918 C20.739,4.5 17.157277,0.918 12.739,0.918 C8.320723,0.918 4.739,4.5 4.739,8.918 C4.739,13.336277 8.320723,16.918 12.739,16.918 C13.446107,16.918 14.125,16.7608443 14.4201,16.4657 L18.8721,20.9177 C19.262624,21.308224 19.895776,21.308224 20.2863,20.9177 C20.676824,20.527176 20.676824,19.894024 20.2863,19.5035 L15.8343,15.0515 C16.1294,14.3444 16.2865,13.6655 16.2865,12.9584 C16.2865,8.5401 12.7048,4.9584 8.2865,4.9584 C3.8682,4.9584 0.2865,8.5401 0.2865,12.9584 C0.2865,17.3767 3.8682,20.9584 8.2865,20.9584 C8.9936,20.9584 9.6725,20.8013 9.9676,20.5062 L14.4196,24.9582 C14.8101,25.3487 15.4433,25.3487 15.8338,24.9582 C16.2243,24.5677 16.2243,23.9345 15.8338,23.544 L11.3818,19.092 C11.6769,18.385 11.834,17.7061 11.834,16.999 C11.834,12.5807 8.2523,8.999 3.834,8.999 C-0.5843,8.999 -4.166,12.5807 -4.166,16.999 C-4.166,21.4173 -0.5843,24.999 3.834,24.999 C4.541107,24.999 5.220,24.8418443 5.5151,24.5467 L9.9671,29 C10.357624,29.390524 10.990776,29.390524 11.3813,29 C11.7718,28.6095 11.7718,27.9763 11.3813,27.5858 L6.9293,23.1338 C7.2244,22.4267 7.3815,21.7478 7.3815,21.0407 C7.3815,16.6224 10.9632,13.0407 15.3815,13.0407 C19.7998,13.0407 23.3815,16.6224 23.3815,21.0407 C23.3815,21.7478 23.5386,22.4267 23.8337,23.1338 L19.3817,27.5858 C18.9912,27.9763 18.9912,28.6095 19.3817,29 C19.7722,29.390524 20.4054,29.390524 20.7959,29 L25.2479,24.548 C25.6439,24.152 25.6439,23.5207 25.2479,23.1247 C24.8519,22.7287 24.2206,22.7287 23.8246,23.1247 L19.3726,27.5767 C19.0775,27.8738 18.3986,28.0309 17.6915,28.0309 C13.2732,28.0309 9.6915,24.4492 9.6915,20.0309 C9.6915,15.6126 13.2732,12.0309 17.6915,12.0309 C18.3986,12.0309 19.0775,12.188 19.3726,12.4851 L23.8246,16.9371 C24.2206,17.3331 24.8519,17.3331 25.2479,16.9371 C25.6439,16.5411 25.6439,15.9098 25.2479,15.5138 L20.7959,11.0618 C20.4054,10.6713 19.7722,10.6713 19.3817,11.0618 L14.9297,15.5138 C14.6346,15.8109 14.465,16.4898 14.465,17.1969 C14.465,21.6152 17.0467,25.1969 21.465,25.1969 C25.8833,25.1969 29.465,21.6152 29.465,17.1969 C29.465,16.4898 29.2954,15.8109 29.0003,15.5138 L24.5483,11.0618 C24.1578,10.6713 23.5246,10.6713 23.1341,11.0618 L18.6821,15.5138 C18.387,15.8109 18.2174,16.4898 18.2174,17.1969 C18.2174,21.6152 20.7991,25.1969 25.2174,25.1969 C29.6357,25.1969 33.2174,21.6152 33.2174,17.1969 C33.2174,12.7786 29.6357,9.1969 25.2174,9.1969 C24.5103,9.1969 23.8314,9.354 23.5363,9.6501 L19.0843,5.1981 C18.6938,4.8076 18.0606,4.8076 17.67,5.1981 L13.218,9.6501 C12.822,10.0461 12.822,10.6774 13.218,11.0734 L17.67,15.5254 C18.0606,15.9159 18.6938,15.9159 19.0843,15.5254 L23.5363,11.0734 C23.8314,10.7773 24.5103,10.6192 25.2174,10.6192 C29.6357,10.6192 33.2174,14.2009 33.2174,18.6192 C33.2174,23.0375 29.6357,26.6192 25.2174,26.6192 C20.7991,26.6192 18.2174,23.0375 18.2174,18.6192 C18.2174,17.9121 18.3755,17.2332 18.6706,16.9371 L14.2186,12.4851 C13.8226,12.0891 13.1913,12.0891 12.7953,12.4851 L8.3433,16.9371 C7.9473,17.3331 7.316,17.3331 6.92,16.9371 C6.524,16.5411 6.524,15.9098 6.92,15.5138 L11.372,11.0618 C11.7625,10.6713 12.3957,10.6713 12.7862,11.0618 L17.2382,15.5138 C17.5333,15.8109 17.7039,16.4898 17.7039,17.1969 C17.7039,21.6152 15.1222,25.1969 10.7039,25.1969 C6.28563,25.1969 2.70391,21.6152 2.70391,17.1969 C2.70391,12.7786 6.28563,9.1969 10.7039,9.1969 C11.4109,9.1969 12.0898,9.354 12.3849,9.6501 L16.8369,5.1981 C17.2274,4.8076 17.8606,4.8076 18.2511,5.1981 L22.7031,9.6501 C23.0991,10.0461 23.0991,10.6774 22.7031,11.0734 L18.2511,15.5254 C17.8606,15.9159 17.2274,15.9159 16.8369,15.5254 L12.3849,11.0734 C12.0898,10.7773 11.4109,10.6192 10.7039,10.6192 C6.28563,10.6192 2.70391,14.2009 2.70391,18.6192 C2.70391,23.0375 6.28563,26.6192 10.7039,26.6192 C15.1222,26.6192 17.7039,23.0375 17.7039,18.6192 C17.7039,17.9121 17.546,17.2332 17.2509,16.9371 L21.7029,12.4851 C22.0989,12.0891 22.7302,12.0891 23.1262,12.4851 L27.5782,16.9371 C27.9742,17.3331 27.9742,17.9644 27.5782,18.3604 L23.1262,22.8124 C22.7302,23.2084 22.0989,23.2084 21.7029,22.8124 L17.2509,18.3604 C16.9558,18.0633 16.7862,17.3844 16.7862,16.6773 C16.7862,12.259 20.3679,8.6773 24.7862,8.6773 C29.2045,8.6773 32.7862,12.259 32.7862,16.6773 C32.7862,17.3844 32.6166,18.0633 32.3215,18.3604 L27.8695,22.8124 C27.4735,23.2084 26.8422,23.2084 26.4462,22.8124 L21.9942,18.3604 C21.6991,18.0633 21.5295,17.3844 21.5295,16.6773 C21.5295,12.259 25.1112,8.6773 29.5295,8.6773 C33.9478,8.6773 37.5295,12.259 37.5295,16.6773 C37.5295,21.0956 33.9478,24.6773 29.5295,24.6773 C29.5295,24.6773 29.5295,24.6773 29.5295,24.6773 L29.5295,24.6773 L29.5295,24.6773 Z'/%3E%3C/svg%3E") no-repeat right 10px center;
+      background-size: 20px 20px;
+    }
+    /* Anime Grid */
     .anime-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -53,6 +87,8 @@
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 0 10px #000;
+      display: flex;
+      flex-direction: column;
     }
     .anime-card img {
       width: 100%;
@@ -61,14 +97,26 @@
     }
     .anime-info {
       padding: 15px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .anime-info h3 {
-      margin: 0 0 10px;
+      margin-bottom: 10px;
       color: #ffcc00;
+      text-align: center;
+    }
+    .toggle-episodes {
+      color: #66ccff;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-bottom: 10px;
+      text-align: center;
     }
     .episodes {
       display: none;
-      margin-top: 10px;
+      text-align: center;
     }
     .episodes a {
       color: #66ccff;
@@ -76,78 +124,79 @@
       margin: 5px 0;
       word-break: break-all;
     }
-    .toggle-episodes {
-      color: #66ccff;
-      text-decoration: underline;
-      cursor: pointer;
-      margin-top: 10px;
-      display: block;
-    }
-    #search {
-      width: 100%;
-      max-width: 800px;
-      margin: 0 auto 20px auto;
-      display: block;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
-      border: none;
-    }
   </style>
 </head>
 <body>
-
-  <h1>Anime Upload System</h1>
-
-  <input type="text" id="search" placeholder="Search anime...">
-
-  <div class="upload-panel">
-    <form id="anime-form">
-      <input type="text" id="anime-title" placeholder="Anime Title" required maxlength="100">
-      <input type="url" id="anime-image" placeholder="Image URL" required>
-      <textarea id="anime-episodes" placeholder="Episode Links (comma separated)" required></textarea>
-      <button type="submit">Add Anime</button>
-    </form>
-  </div>
-
-  <div class="anime-grid" id="anime-grid">
-    <!-- Anime cards go here -->
+  <h1>Anime Vault</h1>
+  <div class="container">
+    <!-- Admin Login: click to reveal upload panel -->
+    <button id="loginBtn">Admin Login</button>
+    
+    <!-- Upload Panel (hidden by default) -->
+    <div class="upload-panel" id="uploadPanel">
+      <form id="animeForm">
+        <input type="text" id="animeTitle" placeholder="Anime Title" required maxlength="100">
+        <input type="url" id="animeImage" placeholder="Image URL (direct link)" required>
+        <textarea id="animeEpisodes" placeholder="Episode Links (comma separated)" required></textarea>
+        <button type="submit">Add Anime</button>
+      </form>
+    </div>
+    
+    <input type="text" id="search" placeholder="Search anime...">
+    
+    <div class="anime-grid" id="animeGrid">
+      <!-- Anime cards are rendered here -->
+    </div>
   </div>
 
   <script>
-    const animeForm = document.getElementById("anime-form");
-    const animeGrid = document.getElementById("anime-grid");
-    const searchInput = document.getElementById("search");
-
-    let animeList = [
+    // Admin login system: reveal upload panel only if the correct password ("secret") is entered
+    const adminPassword = "secret";
+    const loginBtn = document.getElementById("loginBtn");
+    const uploadPanel = document.getElementById("uploadPanel");
+    
+    loginBtn.addEventListener("click", () => {
+      const entered = prompt("Enter admin password:");
+      if (entered === adminPassword) {
+        uploadPanel.style.display = "block";
+        loginBtn.style.display = "none";
+      } else {
+        alert("Incorrect password!");
+      }
+    });
+    
+    // Retrieve animeList from localStorage or use default list
+    let animeList = JSON.parse(localStorage.getItem("animeList")) || [
       {
         title: "Naruto",
         image: "https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg",
-        episodes: ["https://example.com/ep1", "https://example.com/ep2"]
+        episodes: ["https://example.com/naruto-ep1", "https://example.com/naruto-ep2"]
       },
       {
         title: "One Piece",
         image: "https://upload.wikimedia.org/wikipedia/en/9/9f/OnePieceVolume61Cover.jpg",
-        episodes: ["https://example.com/ep1", "https://example.com/ep2", "https://example.com/ep3"]
+        episodes: ["https://example.com/onepiece-ep1", "https://example.com/onepiece-ep2", "https://example.com/onepiece-ep3"]
+      },
+      {
+        title: "Fairy Tail",
+        image: "https://upload.wikimedia.org/wikipedia/en/8/82/Fairy_Tail_cover.jpg",
+        episodes: ["https://example.com/fairytale-ep1", "https://example.com/fairytale-ep2"]
       }
     ];
 
-    animeForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const title = document.getElementById("anime-title").value.trim();
-      const image = document.getElementById("anime-image").value.trim();
-      const episodes = document.getElementById("anime-episodes").value.split(",").map(ep => ep.trim()).filter(ep => ep);
+    const animeForm = document.getElementById("animeForm");
+    const animeGrid = document.getElementById("animeGrid");
+    const searchInput = document.getElementById("search");
 
-      if (title && image && episodes.length) {
-        animeList.push({ title, image, episodes });
-        animeForm.reset();
-        renderAnimes(animeList);
-      }
-    });
+    // Save animeList to localStorage
+    function saveAnimeList() {
+      localStorage.setItem("animeList", JSON.stringify(animeList));
+    }
 
-    function renderAnimes(animes) {
+    // Render anime cards
+    function renderAnimes(list = animeList) {
       animeGrid.innerHTML = "";
-      animes.forEach(anime => {
+      list.forEach((anime, index) => {
         const card = document.createElement("div");
         card.className = "anime-card";
         card.innerHTML = `
@@ -160,27 +209,46 @@
             </div>
           </div>
         `;
-        const toggle = card.querySelector(".toggle-episodes");
-        const episodesDiv = card.querySelector(".episodes");
-        toggle.addEventListener("click", () => {
-          episodesDiv.style.display = episodesDiv.style.display === "none" ? "block" : "none";
-          toggle.textContent = episodesDiv.style.display === "block" ? "Hide Episodes" : "Show Episodes";
+        card.querySelector(".toggle-episodes").addEventListener("click", function() {
+          const eps = card.querySelector(".episodes");
+          if (eps.style.display === "block") {
+            eps.style.display = "none";
+            this.textContent = "Show Episodes";
+          } else {
+            eps.style.display = "block";
+            this.textContent = "Hide Episodes";
+          }
         });
         animeGrid.appendChild(card);
       });
     }
 
-    searchInput.addEventListener("input", function () {
-      const searchTerm = this.value.toLowerCase();
-      const filtered = animeList.filter(anime =>
-        anime.title.toLowerCase().includes(searchTerm)
-      );
+    // Form submission: add anime
+    animeForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const title = document.getElementById("animeTitle").value.trim();
+      const image = document.getElementById("animeImage").value.trim();
+      const episodes = document.getElementById("animeEpisodes").value.split(",")
+                          .map(ep => ep.trim()).filter(ep => ep !== "");
+      if (title && image && episodes.length) {
+        animeList.push({ title, image, episodes });
+        saveAnimeList();
+        renderAnimes(animeList);
+        animeForm.reset();
+      } else {
+        alert("Please fill in all fields properly.");
+      }
+    });
+
+    // Search filtering
+    searchInput.addEventListener("input", function() {
+      const term = this.value.toLowerCase();
+      const filtered = animeList.filter(anime => anime.title.toLowerCase().includes(term));
       renderAnimes(filtered);
     });
 
     // Initial render
     renderAnimes(animeList);
   </script>
-
 </body>
 </html>
