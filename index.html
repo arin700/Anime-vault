@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Solo Leveling Anime Vault</title>
   <style>
     body {
+      font-family: 'Comic Sans MS', sans-serif;
       margin: 0;
-      font-family: 'Comic Sans MS', cursive, sans-serif;
-      background-image: url('https://i.ibb.co/kM08kYZ/solo-leveling-wall.jpg');
+      padding: 0;
+      background: url('https://i.ibb.co/qmNZ14p/solo-bg2.jpg') no-repeat center center fixed;
       background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
       color: white;
     }
     header {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
       display: flex;
       align-items: center;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 10px;
     }
     header img {
       height: 50px;
@@ -26,16 +25,14 @@
     }
     h1 {
       font-size: 24px;
-      margin: 0;
     }
-    .container {
-      background-color: rgba(0, 0, 0, 0.8);
+    .upload-box {
+      background-color: rgba(0,0,0,0.7);
       padding: 20px;
-      margin: 20px;
       border-radius: 10px;
+      width: 90%;
       max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
+      margin: 20px auto;
     }
     input, button {
       width: 100%;
@@ -43,89 +40,98 @@
       margin: 10px 0;
       border-radius: 5px;
       border: none;
+      font-size: 16px;
     }
     button {
-      background-color: #fff;
-      color: #000;
+      background-color: #03a9f4;
+      color: white;
       font-weight: bold;
-      cursor: pointer;
     }
     .episode-list {
-      max-width: 500px;
-      margin: auto;
-      margin-top: 30px;
-      background-color: rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.6);
+      margin: 20px auto;
       padding: 10px;
+      max-width: 400px;
       border-radius: 10px;
     }
     .episode-item {
-      background-color: rgba(255,255,255,0.2);
-      padding: 10px;
       margin: 5px 0;
+      padding: 8px;
+      background: #222;
       border-radius: 5px;
     }
-    .delete-btn {
-      float: right;
+    .episode-item button {
       background: red;
-      color: white;
-      padding: 2px 5px;
-      border-radius: 5px;
-      cursor: pointer;
+      margin-left: 10px;
+      padding: 4px 8px;
     }
   </style>
 </head>
 <body>
+
   <header>
-    <img src="https://i.ibb.co/5k1rLKw/solo-logo.png" alt="Logo">
+    <img src="https://i.ibb.co/5k1rLKw/solo-logo.png" alt="Logo" />
     <h1>Solo Leveling Anime Vault</h1>
   </header>
 
-  <div class="container">
-    <h2>Upload Episode</h2>
-    <input type="text" id="animeName" placeholder="Anime Name">
-    <input type="text" id="episodeNumber" placeholder="Episode Number">
-    <input type="text" id="episodeLink" placeholder="Episode Link">
+  <div class="upload-box">
+    <input type="text" id="animeName" placeholder="Anime Name" />
+    <input type="text" id="episodeNumber" placeholder="Episode Number" />
+    <input type="text" id="episodeLink" placeholder="Episode Link (URL)" />
     <button onclick="uploadEpisode()">Upload</button>
   </div>
 
-  <div class="episode-list" id="episodeList"></div>
+  <div class="episode-list" id="episodeList">
+    <!-- Episodes will appear here -->
+  </div>
 
   <script>
-    let episodes = JSON.parse(localStorage.getItem('episodes') || '[]');
-
-    function renderEpisodes() {
-      const list = document.getElementById('episodeList');
-      list.innerHTML = '';
-      episodes.forEach((ep, index) => {
-        const div = document.createElement('div');
-        div.className = 'episode-item';
-        div.innerHTML = `
-          ${ep.name} - Episode ${ep.number} 
-          <a href="${ep.link}" target="_blank">[Watch]</a>
-          <span class="delete-btn" onclick="deleteEpisode(${index})">Delete</span>
-        `;
-        list.appendChild(div);
-      });
-    }
+    const episodeList = document.getElementById("episodeList");
 
     function uploadEpisode() {
-      const name = document.getElementById('animeName').value.trim();
-      const number = document.getElementById('episodeNumber').value.trim();
-      const link = document.getElementById('episodeLink').value.trim();
-      if (name && number && link) {
-        episodes.push({ name, number, link });
-        localStorage.setItem('episodes', JSON.stringify(episodes));
-        renderEpisodes();
-      }
+      const name = document.getElementById("animeName").value;
+      const number = document.getElementById("episodeNumber").value;
+      const link = document.getElementById("episodeLink").value;
+
+      if (!name || !number || !link) return alert("Fill all fields!");
+
+      const entry = {
+        name,
+        number,
+        link
+      };
+
+      const episodes = JSON.parse(localStorage.getItem("episodes") || "[]");
+      episodes.push(entry);
+      localStorage.setItem("episodes", JSON.stringify(episodes));
+
+      renderEpisodes();
     }
 
     function deleteEpisode(index) {
+      const episodes = JSON.parse(localStorage.getItem("episodes") || "[]");
       episodes.splice(index, 1);
-      localStorage.setItem('episodes', JSON.stringify(episodes));
+      localStorage.setItem("episodes", JSON.stringify(episodes));
       renderEpisodes();
+    }
+
+    function renderEpisodes() {
+      episodeList.innerHTML = "";
+      const episodes = JSON.parse(localStorage.getItem("episodes") || "[]");
+
+      episodes.forEach((ep, i) => {
+        episodeList.innerHTML += `
+          <div class="episode-item">
+            <strong>${ep.name}</strong> - Ep ${ep.number} 
+            <a href="${ep.link}" target="_blank">[Watch]</a>
+            <button onclick="deleteEpisode(${i})">Delete</button>
+          </div>
+        `;
+      });
     }
 
     renderEpisodes();
   </script>
+
 </body>
 </html>
