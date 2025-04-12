@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Solo Leveling Anime Vault</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: url('https://i.imgur.com/X0Z0h8J.png') no-repeat center center fixed;
+      background: url('https://wallpaperbat.com/img/3840x2160/4k-anime-wallpaper-top-free-4k-anime-background.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
     }
@@ -34,6 +34,8 @@
     .upload-section input, .upload-section button {
       display: block;
       margin: 10px 0;
+      width: 100%;
+      padding: 8px;
     }
     .anime-card {
       margin: 10px 0;
@@ -55,7 +57,7 @@
 </head>
 <body>
   <header>
-    <img src="https://i.imgur.com/7h5P8X1.png" alt="Logo">
+    <img src="https://www.pngarts.com/files/3/Anime-Logo-PNG-Image.png" alt="Logo">
     <h1>Solo Leveling Anime Vault</h1>
   </header>
 
@@ -73,7 +75,7 @@
 
   <script>
     const ADMIN_PASSWORD = "Arin";
-    const storedEpisodes = JSON.parse(localStorage.getItem('episodes') || '{}');
+    let episodes = JSON.parse(localStorage.getItem('episodes') || '{}');
 
     function promptAdmin() {
       const pass = prompt("Enter admin password");
@@ -81,58 +83,50 @@
         document.getElementById("adminUpload").style.display = "block";
       }
     }
-    window.onload = () => {
-      promptAdmin();
-      renderEpisodes();
-    }
 
     function uploadEpisode() {
       const anime = document.getElementById("animeName").value.trim();
       const ep = document.getElementById("episodeNumber").value.trim();
       const link = document.getElementById("episodeLink").value.trim();
-      if (!anime || !ep || !link) return alert("Please fill all fields");
-      if (!storedEpisodes[anime]) storedEpisodes[anime] = {};
-      storedEpisodes[anime][ep] = link;
-      localStorage.setItem('episodes', JSON.stringify(storedEpisodes));
+
+      if (!anime || !ep || !link) return alert("Please fill in all fields");
+
+      if (!episodes[anime]) episodes[anime] = [];
+      episodes[anime].push({ ep, link });
+      localStorage.setItem('episodes', JSON.stringify(episodes));
       renderEpisodes();
     }
 
     function renderEpisodes() {
-      const container = document.getElementById("animeList");
-      container.innerHTML = "";
-      for (const [anime, eps] of Object.entries(storedEpisodes)) {
-        const card = document.createElement("div");
-        card.className = "anime-card";
-        card.innerHTML = `<h3>${anime}</h3><img src='https://i.imgur.com/Z6NwzVH.png'><div class='episode-controls'>`;
-        for (const [ep, link] of Object.entries(eps)) {
-          card.innerHTML += `
-            <div>
-              Episode ${ep}: <a href='${link}' target='_blank'>Watch</a>
-              <button onclick="editEpisode('${anime}','${ep}')">Edit</button>
-              <button onclick="deleteEpisode('${anime}','${ep}')">Delete</button>
-            </div>`;
-        }
-        card.innerHTML += `</div>`;
-        container.appendChild(card);
+      const list = document.getElementById("animeList");
+      list.innerHTML = '';
+
+      for (const [anime, eps] of Object.entries(episodes)) {
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        card.innerHTML = `
+          <h3>${anime}</h3>
+          <img src="https://pngimg.com/d/anime_PNG38.png" alt="${anime}">
+          <ul>${eps.map((e, i) => `
+            <li>Episode ${e.ep} - <a href="${e.link}" target="_blank">Watch</a>
+              <button onclick="deleteEpisode('${anime}', ${i})">Delete</button>
+            </li>
+          `).join('')}</ul>
+        `;
+        list.appendChild(card);
       }
     }
 
-    function editEpisode(anime, ep) {
-      const newLink = prompt("Enter new link:", storedEpisodes[anime][ep]);
-      if (newLink) {
-        storedEpisodes[anime][ep] = newLink;
-        localStorage.setItem('episodes', JSON.stringify(storedEpisodes));
-        renderEpisodes();
-      }
+    function deleteEpisode(anime, index) {
+      episodes[anime].splice(index, 1);
+      if (episodes[anime].length === 0) delete episodes[anime];
+      localStorage.setItem('episodes', JSON.stringify(episodes));
+      renderEpisodes();
     }
 
-    function deleteEpisode(anime, ep) {
-      if (confirm("Delete episode " + ep + "?")) {
-        delete storedEpisodes[anime][ep];
-        if (Object.keys(storedEpisodes[anime]).length === 0) delete storedEpisodes[anime];
-        localStorage.setItem('episodes', JSON.stringify(storedEpisodes));
-        renderEpisodes();
-      }
+    window.onload = () => {
+      promptAdmin();
+      renderEpisodes();
     }
   </script>
 </body>
