@@ -1,67 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Solo Leveling Anime Vault</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('https://wallpaperbat.com/img/3840x2160/4k-anime-wallpaper-top-free-4k-anime-background.jpg') no-repeat center center fixed;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-image: url('https://i.ibb.co/kM08kYZ/solo-leveling-wall.jpg');
       background-size: cover;
-      color: #fff;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color: white;
     }
     header {
       display: flex;
       align-items: center;
+      background-color: rgba(0, 0, 0, 0.7);
       padding: 10px;
-      background-color: rgba(0,0,0,0.6);
     }
     header img {
       height: 50px;
       margin-right: 15px;
     }
-    header h1 {
+    h1 {
       font-size: 24px;
+      margin: 0;
     }
-    .upload-section, .anime-list {
-      margin: 20px;
-      background-color: rgba(0, 0, 0, 0.7);
+    .container {
+      background-color: rgba(0, 0, 0, 0.8);
       padding: 20px;
+      margin: 20px;
       border-radius: 10px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .upload-section input, .upload-section button {
-      display: block;
-      margin: 10px 0;
+    input, button {
       width: 100%;
-      padding: 8px;
-    }
-    .anime-card {
+      padding: 10px;
       margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #fff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .episode-list {
+      max-width: 500px;
+      margin: auto;
+      margin-top: 30px;
       background-color: rgba(255, 255, 255, 0.1);
       padding: 10px;
       border-radius: 10px;
     }
-    .anime-card img {
-      max-width: 100px;
-      border-radius: 10px;
+    .episode-item {
+      background-color: rgba(255,255,255,0.2);
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
     }
-    .episode-controls {
-      margin-top: 10px;
-    }
-    .episode-controls button {
-      margin-right: 10px;
+    .delete-btn {
+      float: right;
+      background: red;
+      color: white;
+      padding: 2px 5px;
+      border-radius: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="https://www.pngarts.com/files/3/Anime-Logo-PNG-Image.png" alt="Logo">
+    <img src="https://i.ibb.co/5k1rLKw/solo-logo.png" alt="Logo">
     <h1>Solo Leveling Anime Vault</h1>
   </header>
 
-  <div class="upload-section" id="adminUpload" style="display:none">
+  <div class="container">
     <h2>Upload Episode</h2>
     <input type="text" id="animeName" placeholder="Anime Name">
     <input type="text" id="episodeNumber" placeholder="Episode Number">
@@ -69,65 +88,44 @@
     <button onclick="uploadEpisode()">Upload</button>
   </div>
 
-  <div class="anime-list" id="animeList">
-    <!-- Anime cards will be dynamically inserted here -->
-  </div>
+  <div class="episode-list" id="episodeList"></div>
 
   <script>
-    const ADMIN_PASSWORD = "Arin";
-    let episodes = JSON.parse(localStorage.getItem('episodes') || '{}');
+    let episodes = JSON.parse(localStorage.getItem('episodes') || '[]');
 
-    function promptAdmin() {
-      const pass = prompt("Enter admin password");
-      if (pass === ADMIN_PASSWORD) {
-        document.getElementById("adminUpload").style.display = "block";
-      }
+    function renderEpisodes() {
+      const list = document.getElementById('episodeList');
+      list.innerHTML = '';
+      episodes.forEach((ep, index) => {
+        const div = document.createElement('div');
+        div.className = 'episode-item';
+        div.innerHTML = `
+          ${ep.name} - Episode ${ep.number} 
+          <a href="${ep.link}" target="_blank">[Watch]</a>
+          <span class="delete-btn" onclick="deleteEpisode(${index})">Delete</span>
+        `;
+        list.appendChild(div);
+      });
     }
 
     function uploadEpisode() {
-      const anime = document.getElementById("animeName").value.trim();
-      const ep = document.getElementById("episodeNumber").value.trim();
-      const link = document.getElementById("episodeLink").value.trim();
-
-      if (!anime || !ep || !link) return alert("Please fill in all fields");
-
-      if (!episodes[anime]) episodes[anime] = [];
-      episodes[anime].push({ ep, link });
-      localStorage.setItem('episodes', JSON.stringify(episodes));
-      renderEpisodes();
-    }
-
-    function renderEpisodes() {
-      const list = document.getElementById("animeList");
-      list.innerHTML = '';
-
-      for (const [anime, eps] of Object.entries(episodes)) {
-        const card = document.createElement('div');
-        card.className = 'anime-card';
-        card.innerHTML = `
-          <h3>${anime}</h3>
-          <img src="https://pngimg.com/d/anime_PNG38.png" alt="${anime}">
-          <ul>${eps.map((e, i) => `
-            <li>Episode ${e.ep} - <a href="${e.link}" target="_blank">Watch</a>
-              <button onclick="deleteEpisode('${anime}', ${i})">Delete</button>
-            </li>
-          `).join('')}</ul>
-        `;
-        list.appendChild(card);
+      const name = document.getElementById('animeName').value.trim();
+      const number = document.getElementById('episodeNumber').value.trim();
+      const link = document.getElementById('episodeLink').value.trim();
+      if (name && number && link) {
+        episodes.push({ name, number, link });
+        localStorage.setItem('episodes', JSON.stringify(episodes));
+        renderEpisodes();
       }
     }
 
-    function deleteEpisode(anime, index) {
-      episodes[anime].splice(index, 1);
-      if (episodes[anime].length === 0) delete episodes[anime];
+    function deleteEpisode(index) {
+      episodes.splice(index, 1);
       localStorage.setItem('episodes', JSON.stringify(episodes));
       renderEpisodes();
     }
 
-    window.onload = () => {
-      promptAdmin();
-      renderEpisodes();
-    }
+    renderEpisodes();
   </script>
 </body>
 </html>
