@@ -1,209 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Anime Vault — Curated by Arin</title>
+  <meta charset="UTF-8">
+  <title>Anime Upload System</title>
   <style>
     body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #fff;
       margin: 0;
-      background: #121212;
-      color: white;
-      font-family: 'Comic Neue', sans-serif;
+      padding: 20px;
     }
-    header {
-      background: black;
-      padding: 1em;
+    h1 {
       text-align: center;
-      border-bottom: 3px solid orange;
+      color: #ffcc00;
     }
-    header h1 {
-      color: orange;
-      font-size: 2em;
+    .upload-panel, .anime-grid {
+      max-width: 800px;
+      margin: auto;
     }
-    header p {
-      margin-top: 5px;
-      font-style: italic;
-    }
-    nav {
-      text-align: center;
-      margin-top: 1em;
-    }
-    nav input {
-      padding: 0.5em;
-      border-radius: 5px;
-      border: none;
-      width: 60%;
-      margin-bottom: 10px;
-    }
-    .anime-grid {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      padding: 1em;
-      gap: 1em;
-    }
-    .card {
-      background: #1a1a1a;
-      padding: 1em;
+    .upload-panel {
+      background: #2c2c3e;
+      padding: 20px;
       border-radius: 10px;
-      width: 200px;
-      box-shadow: 0 0 20px purple;
-      text-align: center;
-      transition: transform 0.3s;
+      margin-bottom: 30px;
     }
-    .card:hover {
-      transform: scale(1.05);
-    }
-    .card img {
+    input, textarea, button {
       width: 100%;
-      height: 120px;
-      border-radius: 5px;
-      object-fit: cover;
-    }
-    .title {
-      font-size: 1.1em;
-      margin: 0.5em 0;
-    }
-    .buttons button {
-      margin-top: 5px;
-      padding: 0.5em;
-      background: orange;
+      padding: 10px;
+      margin: 10px 0;
       border: none;
       border-radius: 5px;
-      width: 100%;
+      font-size: 16px;
+    }
+    button {
+      background: #ffcc00;
+      color: #000;
       font-weight: bold;
       cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #e6b800;
+    }
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .anime-card {
+      background: #333344;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 10px #000;
+    }
+    .anime-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .anime-info {
+      padding: 15px;
+    }
+    .anime-info h3 {
+      margin: 0 0 10px;
+      color: #ffcc00;
     }
     .episodes {
       display: none;
-      margin-top: 1em;
-      text-align: left;
-    }
-    .episodes button {
-      margin: 2px;
-      background: #ff9800;
-    }
-    .upload-panel {
-      background: #1a1a1a;
-      padding: 1em;
-      margin: 1em;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .upload-panel input, .upload-panel textarea {
-      display: block;
-      margin: 0.5em auto;
-      padding: 0.5em;
-      width: 80%;
-      border-radius: 5px;
-      border: none;
-    }
-    .upload-panel button {
       margin-top: 10px;
-      background: purple;
-      color: white;
-      padding: 0.6em 1em;
-      border: none;
-      border-radius: 5px;
+    }
+    .episodes a {
+      color: #66ccff;
+      display: block;
+      margin: 5px 0;
+      word-break: break-all;
+    }
+    .toggle-episodes {
+      color: #66ccff;
+      text-decoration: underline;
       cursor: pointer;
+      margin-top: 10px;
+      display: block;
+    }
+    #search {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto 20px auto;
+      display: block;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
     }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Anime Vault</h1>
-  <p>Curated by Arin — Best Legend of Hindi Anime</p>
-</header>
+  <h1>Anime Upload System</h1>
 
-<nav>
-  <input id="search" placeholder="Search anime..." />
-</nav>
+  <input type="text" id="search" placeholder="Search anime...">
 
-<div class="upload-panel">
-  <h3>Add New Anime</h3>
-  <input id="animeTitle" placeholder="Title"/>
-  <input id="animeImage" placeholder="Image URL (or leave blank)"/>
-  <textarea id="episodeList" placeholder="Enter episodes (Ex: Ep 1-10, Ep 11-20)"></textarea>
-  <button onclick="addAnime()">Add Anime</button>
-</div>
+  <div class="upload-panel">
+    <form id="anime-form">
+      <input type="text" id="anime-title" placeholder="Anime Title" required maxlength="100">
+      <input type="url" id="anime-image" placeholder="Image URL" required>
+      <textarea id="anime-episodes" placeholder="Episode Links (comma separated)" required></textarea>
+      <button type="submit">Add Anime</button>
+    </form>
+  </div>
 
-<div class="anime-grid" id="animeGrid"></div>
+  <div class="anime-grid" id="anime-grid">
+    <!-- Anime cards go here -->
+  </div>
 
-<script>
-  let animeList = [];
+  <script>
+    const animeForm = document.getElementById("anime-form");
+    const animeGrid = document.getElementById("anime-grid");
+    const searchInput = document.getElementById("search");
 
-  function addAnime() {
-    const title = document.getElementById("animeTitle").value.trim();
-    const image = document.getElementById("animeImage").value.trim() || "https://via.placeholder.com/200x120?text=Anime";
-    const episodeInput = document.getElementById("episodeList").value.trim();
+    let animeList = [
+      {
+        title: "Naruto",
+        image: "https://upload.wikimedia.org/wikipedia/en/9/94/NarutoCoverTankobon1.jpg",
+        episodes: ["https://example.com/ep1", "https://example.com/ep2"]
+      },
+      {
+        title: "One Piece",
+        image: "https://upload.wikimedia.org/wikipedia/en/9/9f/OnePieceVolume61Cover.jpg",
+        episodes: ["https://example.com/ep1", "https://example.com/ep2", "https://example.com/ep3"]
+      }
+    ];
 
-    if (!title || !episodeInput) {
-      alert("Please fill in the title and episodes.");
-      return;
+    animeForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const title = document.getElementById("anime-title").value.trim();
+      const image = document.getElementById("anime-image").value.trim();
+      const episodes = document.getElementById("anime-episodes").value.split(",").map(ep => ep.trim()).filter(ep => ep);
+
+      if (title && image && episodes.length) {
+        animeList.push({ title, image, episodes });
+        animeForm.reset();
+        renderAnimes(animeList);
+      }
+    });
+
+    function renderAnimes(animes) {
+      animeGrid.innerHTML = "";
+      animes.forEach(anime => {
+        const card = document.createElement("div");
+        card.className = "anime-card";
+        card.innerHTML = `
+          <img src="${anime.image}" alt="${anime.title}" onerror="this.src='https://via.placeholder.com/300x150?text=No+Image';">
+          <div class="anime-info">
+            <h3>${anime.title}</h3>
+            <span class="toggle-episodes">Show Episodes</span>
+            <div class="episodes">
+              ${anime.episodes.map(link => `<a href="${link}" target="_blank">${link}</a>`).join("")}
+            </div>
+          </div>
+        `;
+        const toggle = card.querySelector(".toggle-episodes");
+        const episodesDiv = card.querySelector(".episodes");
+        toggle.addEventListener("click", () => {
+          episodesDiv.style.display = episodesDiv.style.display === "none" ? "block" : "none";
+          toggle.textContent = episodesDiv.style.display === "block" ? "Hide Episodes" : "Show Episodes";
+        });
+        animeGrid.appendChild(card);
+      });
     }
 
-    const episodes = episodeInput.split(',').map(e => e.trim());
-
-    animeList.push({ title, image, episodes });
-    renderAnimes();
-
-    // Clear input fields
-    document.getElementById("animeTitle").value = '';
-    document.getElementById("animeImage").value = '';
-    document.getElementById("episodeList").value = '';
-  }
-
-  function renderAnimes() {
-    const grid = document.getElementById("animeGrid");
-    grid.innerHTML = "";
-    animeList.forEach((anime, index) => {
-      let epHTML = anime.episodes.map(ep => `<button>${ep}</button>`).join('');
-      grid.innerHTML += `
-        <div class="card">
-          <img src="${anime.image}" onerror="this.src='https://via.placeholder.com/200x120?text=No+Image';" />
-          <div class="title">${anime.title}</div>
-          <div class="buttons">
-            <button onclick="toggleEpisodes(${index})">Show Episodes</button>
-            <button>Shadow Mark</button>
-          </div>
-          <div class="episodes" id="ep-${index}">
-            ${epHTML}
-          </div>
-        </div>
-      `;
+    searchInput.addEventListener("input", function () {
+      const searchTerm = this.value.toLowerCase();
+      const filtered = animeList.filter(anime =>
+        anime.title.toLowerCase().includes(searchTerm)
+      );
+      renderAnimes(filtered);
     });
-  }
 
-  function toggleEpisodes(index) {
-    const el = document.getElementById(`ep-${index}`);
-    el.style.display = el.style.display === 'block' ? 'none' : 'block';
-  }
-
-  document.getElementById("search").addEventListener("input", function () {
-    const value = this.value.toLowerCase();
-    const filtered = animeList.filter(a => a.title.toLowerCase().includes(value));
-    const grid = document.getElementById("animeGrid");
-    grid.innerHTML = "";
-    filtered.forEach((anime, index) => {
-      let epHTML = anime.episodes.map(ep => `<button>${ep}</button>`).join('');
-      grid.innerHTML += `
-        <div class="card">
-          <img src="${anime.image}" onerror="this.src='https://via.placeholder.com/200x120?text=No+Image';" />
-          <div class="title">${anime.title}</div>
-          <div class="buttons">
-            <button onclick="toggleEpisodes(${index})">Show Episodes</button>
-            <button>Shadow Mark</button>
-          </div>
-          <div class="episodes" id="ep-${index}">
-            ${epHTML}
-          </div>
-        </div>
-      `;
-    });
-  });
-</script>
+    // Initial render
+    renderAnimes(animeList);
+  </script>
 
 </body>
 </html>
